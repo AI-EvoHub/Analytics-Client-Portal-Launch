@@ -1,0 +1,735 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Inter',sans-serif;background:#07070F;color:#E2E2F0;font-size:13px;height:100vh;overflow:hidden}
+:root{
+  --bg:#07070F;--bg1:#0C0C18;--bg2:#121220;--bg3:#1A1A2E;--bg4:#22223A;
+  --b:rgba(255,255,255,.05);--b2:rgba(255,255,255,.09);--b3:rgba(255,255,255,.16);
+  --t:#E2E2F0;--t2:#7878A0;--t3:#3A3A5C;--t4:#B0B0D0;
+  --ac:#6366F1;--ac2:#818CF8;--ac3:rgba(99,102,241,.12);
+  --gr:#10B981;--gr2:#34D399;--gr3:rgba(16,185,129,.1);
+  --am:#F59E0B;--am2:rgba(245,158,11,.1);
+  --rd:#EF4444;--rd2:rgba(239,68,68,.1);
+  --pu:#A855F7;--pu2:rgba(168,85,247,.1);
+  --cy:#06B6D4;--cy2:rgba(6,182,212,.1);
+  --pk:#EC4899;--pk2:rgba(236,72,153,.1)
+}
+.app{height:100vh;display:flex;flex-direction:column}
+.topbar{height:48px;background:var(--bg1);border-bottom:1px solid var(--b2);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-m{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:14px}
+.logo-t{font-size:14px;font-weight:600;background:linear-gradient(90deg,#fff,#A5B4FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.phase-tag{font-size:11px;padding:3px 9px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:20px;color:var(--gr);font-weight:600}
+.tdiv{width:1px;height:20px;background:var(--b2)}
+.ntabs{display:flex;gap:2px}
+.ntab{display:flex;align-items:center;gap:5px;padding:5px 11px;font-size:12px;font-weight:500;border:1px solid transparent;border-radius:7px;background:none;cursor:pointer;color:var(--t2);transition:all .12s;white-space:nowrap}
+.ntab:hover{color:var(--t);background:var(--bg2)}
+.ntab.on{background:var(--bg3);border-color:var(--b2);color:var(--t)}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.blv{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 9px;background:var(--gr3);border:1px solid rgba(16,185,129,.2);border-radius:20px;color:var(--gr)}
+.ld{width:5px;height:5px;border-radius:50%;background:var(--gr);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sec{display:none;flex:1;overflow:hidden}
+.sec.on{display:flex}
+.page{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+/* shared */
+.page-h{font-size:17px;font-weight:600}
+.page-sub{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.5}
+.card{background:var(--bg2);border:1px solid var(--b);border-radius:12px;overflow:hidden}
+.card-h{padding:11px 14px;border-bottom:1px solid var(--b);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0}
+.card-b{padding:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px}
+.b-gr{background:var(--gr3);color:var(--gr);border:1px solid rgba(16,185,129,.18)}
+.b-am{background:var(--am2);color:var(--am);border:1px solid rgba(245,158,11,.18)}
+.b-rd{background:var(--rd2);color:var(--rd);border:1px solid rgba(239,68,68,.18)}
+.b-ac{background:var(--ac3);color:var(--ac2);border:1px solid rgba(99,102,241,.18)}
+.b-pu{background:var(--pu2);color:var(--pu);border:1px solid rgba(168,85,247,.18)}
+.b-cy{background:var(--cy2);color:var(--cy);border:1px solid rgba(6,182,212,.18)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap;font-family:inherit}
+.btn-ac{background:var(--ac);color:white}.btn-ac:hover{background:var(--ac2)}
+.btn-gr{background:var(--gr);color:white}.btn-gr:hover{filter:brightness(1.1)}
+.btn-ghost{background:none;border:1px solid var(--b2);color:var(--t2);font-family:inherit}.btn-ghost:hover{background:var(--bg3);color:var(--t)}
+.btn-sm{padding:4px 11px;font-size:11px;border-radius:6px}
+.btn-rd{background:var(--rd2);border:1px solid rgba(239,68,68,.2);color:var(--rd);font-family:inherit}
+.fld label{font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
+.fld input,.fld select,.fld textarea{width:100%;background:var(--bg);border:1px solid var(--b2);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--t);outline:none;font-family:inherit;transition:border-color .12s}
+.fld input:focus,.fld select:focus{border-color:var(--ac)}
+.fld select option{background:var(--bg2)}
+.tog{display:flex;align-items:center;gap:7px;cursor:pointer}
+.tog-t{width:32px;height:17px;border-radius:9px;background:var(--b2);position:relative;transition:background .15s;flex-shrink:0}
+.tog-t.on{background:var(--ac)}
+.tog-t::after{content:'';width:12px;height:12px;border-radius:50%;background:white;position:absolute;top:2.5px;left:2.5px;transition:left .15s}
+.tog-t.on::after{left:17.5px}
+.tog-l{font-size:12px;color:var(--t2)}
+.stat-box{background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:12px 14px}
+.sb-val{font-size:26px;font-weight:700;line-height:1.1}
+.sb-lbl{font-size:11px;color:var(--t2);margin-top:3px}
+.sb-ch{font-size:11px;margin-top:4px;font-weight:500}
+.progress{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-f{height:100%;border-radius:3px;transition:width .8s ease}
+
+/* ═══ ANALYTICS ═══ */
+.chart-area{position:relative;height:140px;overflow:hidden}
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:100%;padding:0 4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar{border-radius:4px 4px 0 0;width:100%;transition:height .5s ease;cursor:pointer;min-height:3px}
+.bar:hover{filter:brightness(1.2)}
+.bar-lbl{font-size:9px;color:var(--t3);white-space:nowrap}
+.sparkline{display:flex;align-items:flex-end;gap:2px;height:28px}
+.sp-bar{width:6px;border-radius:2px 2px 0 0;flex-shrink:0}
+.metric-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b)}
+.metric-row:last-child{border-bottom:none}
+.mr-name{font-size:12.5px;color:var(--t4)}
+.mr-val{font-size:12.5px;font-weight:600}
+.mr-bar{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:0 10px}
+.mr-fill{height:100%;border-radius:2px}
+.ai-savings{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:16px}
+
+/* ═══ CLIENT PORTAL ═══ */
+.portal-layout{display:flex;height:100%;overflow:hidden}
+.portal-sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--b);background:var(--bg1);display:flex;flex-direction:column;padding:14px 10px;gap:2px}
+.portal-logo-area{padding:0 6px;margin-bottom:14px}
+.portal-co{font-size:14px;font-weight:700;margin-bottom:2px}
+.portal-plan{font-size:11px;padding:2px 8px;border-radius:10px;display:inline-block}
+.ps-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;padding:8px 6px 3px}
+.ps-btn{display:flex;align-items:center;gap:8px;padding:6px 8px;border:none;border-radius:7px;background:none;color:var(--t2);cursor:pointer;text-align:left;width:100%;font-size:12px;font-family:inherit;transition:all .12s}
+.ps-btn:hover{background:var(--bg2);color:var(--t)}
+.ps-btn.on{background:var(--bg3);color:var(--t);border:1px solid var(--b)}
+.ps-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.portal-main{flex:1;overflow-y:auto;padding:20px;background:var(--bg)}
+.portal-view{display:none}.portal-view.on{display:flex;flex-direction:column;gap:14px}
+.quick-stat{background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:12px 14px}
+.qs-val{font-size:22px;font-weight:700}
+.qs-lbl{font-size:11px;color:var(--t2);margin-top:2px}
+.notif{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--bg2);border:1px solid var(--b);border-radius:9px;margin-bottom:7px}
+.notif-ico{font-size:16px;flex-shrink:0}
+.notif-t{font-size:12.5px;font-weight:500}
+.notif-s{font-size:11.5px;color:var(--t2);margin-top:2px}
+.notif-time{font-size:10px;color:var(--t3);margin-left:auto;flex-shrink:0}
+
+/* ═══ BILLING ═══ */
+.plan-card{border-radius:12px;padding:18px;position:relative;overflow:hidden}
+.plan-feat{display:flex;align-items:flex-start;gap:7px;font-size:12px;margin-bottom:6px}
+.plan-check{color:var(--gr);flex-shrink:0;margin-top:1px}
+.invoice-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--b);font-size:12px}
+.invoice-row:last-child{border-bottom:none}
+.inv-status{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.inv-paid{background:var(--gr3);color:var(--gr)}
+.inv-pending{background:var(--am2);color:var(--am)}
+.mrr-breakdown{display:flex;flex-direction:column;gap:0}
+.mrr-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b);font-size:12.5px}
+.mrr-row:last-child{border-bottom:none}
+.mrr-name{color:var(--t4);display:flex;align-items:center;gap:7px}
+.mrr-plan{font-size:10px;padding:1px 7px;border-radius:8px}
+.mrr-val{font-weight:600;color:var(--gr)}
+
+/* ═══ WHITE LABEL ═══ */
+.wl-preview{background:white;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.wl-nav{height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;border-bottom:1px solid #E5E7EB}
+.wl-logo-area{display:flex;align-items:center;gap:7px}
+.wl-logo-mark{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.wl-brand-name{font-size:13px;font-weight:700;color:#111}
+.wl-hero{padding:20px;background:linear-gradient(135deg,#F8F9FF,#EEF2FF);border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between}
+.wl-hero-t{font-size:16px;font-weight:700;color:#111;margin-bottom:4px}
+.wl-hero-s{font-size:12px;color:#6B7280}
+.wl-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}
+.wls{background:white;border:1px solid #E5E7EB;border-radius:8px;padding:9px 11px;text-align:center}
+.wls-val{font-size:18px;font-weight:700;color:#111}
+.wls-lbl{font-size:10px;color:#9CA3AF;margin-top:1px}
+.color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .12s;flex-shrink:0}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.sel{border-color:white;transform:scale(1.15)}
+
+/* ═══ GTM / PITCH ═══ */
+.pitch-slide{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden}
+.ps-num{position:absolute;top:14px;right:16px;font-size:11px;font-weight:700;color:var(--t3)}
+.ps-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.ps-h{font-size:18px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.ps-body{font-size:12.5px;color:var(--t4);line-height:1.7}
+.ps-highlight{background:var(--ac3);border:1px solid rgba(99,102,241,.2);border-radius:8px;padding:10px 13px;margin-top:10px;font-size:13px;font-weight:600;color:var(--ac2)}
+.ps-bullets{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.ps-bullet{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--t4)}
+.ps-b-icon{flex-shrink:0;margin-top:1px}
+.objection{background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.obj-q{font-size:13px;font-weight:600;color:var(--am);margin-bottom:7px;display:flex;align-items:flex-start;gap:7px}
+.obj-a{font-size:12.5px;color:var(--t4);line-height:1.6;padding-left:22px}
+.pricing-table{border-radius:12px;overflow:hidden;border:1px solid var(--b)}
+.pt-hdr{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;background:var(--bg3);border-bottom:1px solid var(--b)}
+.pt-col{padding:10px 13px;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+.pt-col.feat{color:var(--t3)}
+.pt-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;border-bottom:1px solid var(--b)}
+.pt-row:last-child{border-bottom:none}
+.pt-row:nth-child(even){background:rgba(255,255,255,.01)}
+.pt-cell{padding:9px 13px;font-size:12px;display:flex;align-items:center;gap:5px}
+.pt-cell.feat-name{color:var(--t4);font-weight:500}
+.check-y{color:var(--gr);font-weight:700}
+.check-n{color:var(--t3)}
+.roi-calc{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(99,102,241,.08));border:1px solid rgba(16,185,129,.18);border-radius:12px;padding:16px}
+</style>
+
+<div class="app">
+<div class="topbar">
+  <div class="logo"><div class="logo-m">🏖️</div><span class="logo-t">RealCentral AI</span></div>
+  <span class="phase-tag">🚀 Phase 4 — Launch</span>
+  <div class="tdiv"></div>
+  <div class="ntabs">
+    <button class="ntab on" onclick="sw('analytics',this)">📊 Analytics</button>
+    <button class="ntab" onclick="sw('portal',this)">🏢 Client portal</button>
+    <button class="ntab" onclick="sw('billing',this)">💳 Billing</button>
+    <button class="ntab" onclick="sw('whitelabel',this)">🎨 White-label</button>
+    <button class="ntab" onclick="sw('pitch',this)">🚀 Pitch & GTM</button>
+  </div>
+  <div class="top-r">
+    <span class="blv"><span class="ld"></span>7 clients live</span>
+    <span style="font-size:11px;padding:3px 9px;background:var(--gr3);border:1px solid rgba(16,185,129,.2);border-radius:20px;color:var(--gr);font-weight:600">$7,493 MRR</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ ANALYTICS ═══════════════════ -->
+<div class="sec on" id="sec-analytics">
+<div class="page">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between">
+    <div><div class="page-h">Analytics dashboard</div><div class="page-sub">Full-picture revenue intelligence. Every number tied back to AI actions.</div></div>
+    <div style="display:flex;gap:6px">
+      <select style="background:var(--bg2);border:1px solid var(--b2);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--t);outline:none">
+        <option>Last 30 days</option><option>Last 90 days</option><option>This year</option>
+      </select>
+      <button class="btn btn-ghost btn-sm">⬇ Export</button>
+    </div>
+  </div>
+  <!-- Top KPIs -->
+  <div class="grid4">
+    <div class="stat-box">
+      <div class="sb-val" style="color:var(--gr)">$142,480</div>
+      <div class="sb-lbl">Booking revenue (AI-attributed)</div>
+      <div class="sb-ch" style="color:var(--gr)">↑ +34% vs last period</div>
+      <div class="sparkline" style="margin-top:8px" id="sp1"></div>
+    </div>
+    <div class="stat-box">
+      <div class="sb-val" style="color:var(--ac)">4,218</div>
+      <div class="sb-lbl">Messages handled by AI</div>
+      <div class="sb-ch" style="color:var(--gr)">↑ 98.4% auto-resolved</div>
+      <div class="sparkline" style="margin-top:8px" id="sp2"></div>
+    </div>
+    <div class="stat-box">
+      <div class="sb-val" style="color:var(--am)">1.8s</div>
+      <div class="sb-lbl">Avg AI response time</div>
+      <div class="sb-ch" style="color:var(--gr)">↓ vs 4.2 hrs human avg</div>
+      <div class="sparkline" style="margin-top:8px" id="sp3"></div>
+    </div>
+    <div class="stat-box">
+      <div class="sb-val" style="color:var(--pu)">$8,240</div>
+      <div class="sb-lbl">Upsell revenue generated</div>
+      <div class="sb-ch" style="color:var(--gr)">↑ +22% vs last period</div>
+      <div class="sparkline" style="margin-top:8px" id="sp4"></div>
+    </div>
+  </div>
+  <!-- Revenue chart + channel breakdown -->
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h">Booking revenue by week <span class="badge b-gr">AI handled</span></div>
+      <div class="card-b">
+        <div class="chart-area" id="revenue-chart"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h">Channel performance</div>
+      <div class="card-b">
+        <div class="metric-row"><span class="mr-name">💬 WhatsApp</span><div class="mr-bar"><div class="mr-fill" style="width:72%;background:#25D366"></div></div><span class="mr-val" style="color:#25D366">72%</span></div>
+        <div class="metric-row"><span class="mr-name">📱 SMS</span><div class="mr-bar"><div class="mr-fill" style="width:18%;background:#30D158"></div></div><span class="mr-val" style="color:#30D158">18%</span></div>
+        <div class="metric-row"><span class="mr-name">🌐 Web chat</span><div class="mr-bar"><div class="mr-fill" style="width:8%;background:var(--ac)"></div></div><span class="mr-val" style="color:var(--ac)">8%</span></div>
+        <div class="metric-row"><span class="mr-name">📞 Voice AI</span><div class="mr-bar"><div class="mr-fill" style="width:2%;background:var(--am)"></div></div><span class="mr-val" style="color:var(--am)">2%</span></div>
+        <div style="height:1px;background:var(--b);margin:10px 0"></div>
+        <div class="metric-row"><span class="mr-name">📅 Booking inquiries</span><div class="mr-bar"><div class="mr-fill" style="width:88%;background:var(--cy)"></div></div><span class="mr-val">238</span></div>
+        <div class="metric-row"><span class="mr-name">✅ Conversion rate</span><div class="mr-bar"><div class="mr-fill" style="width:64%;background:var(--pu)"></div></div><span class="mr-val" style="color:var(--pu)">64%</span></div>
+        <div class="metric-row"><span class="mr-name">⭐ Avg review score</span><div class="mr-bar"><div class="mr-fill" style="width:97%;background:var(--am)"></div></div><span class="mr-val" style="color:var(--am)">4.88★</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- AI savings calculator -->
+  <div class="ai-savings">
+    <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--t)">💡 AI vs Human cost — what the system saved your client this month</div>
+    <div class="grid4">
+      <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--rd)">$3,200</div>
+        <div style="font-size:10px;color:var(--t2);margin-top:2px">Cost of 1 FTE guest agent (monthly)</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--gr)">$92</div>
+        <div style="font-size:10px;color:var(--t2);margin-top:2px">AI infra cost this month</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--gr)">$3,108</div>
+        <div style="font-size:10px;color:var(--t2);margin-top:2px">Net savings vs hiring</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--am)">34×</div>
+        <div style="font-size:10px;color:var(--t2);margin-top:2px">ROI on RealCentral subscription</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--ac2)">📌 Share this with your client every month as their ROI report. This is your retention weapon.</div>
+  </div>
+  <!-- Conversion funnel -->
+  <div class="card">
+    <div class="card-h">AI conversation funnel — last 30 days</div>
+    <div class="card-b">
+      <div style="display:flex;gap:0;align-items:flex-end;height:90px" id="funnel-chart"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ CLIENT PORTAL ═══════════════════ -->
+<div class="sec" id="sec-portal">
+<div class="portal-layout">
+  <div class="portal-sidebar" id="portal-sidebar">
+    <div class="portal-logo-area">
+      <div class="portal-co" id="portal-co-name">Azure Villas</div>
+      <span class="portal-plan" id="portal-plan-badge" style="background:var(--am2);color:var(--am);border:1px solid rgba(245,158,11,.2)">Growth plan</span>
+    </div>
+    <div class="ps-lbl">Overview</div>
+    <button class="ps-btn on" onclick="swPortal('overview',this)"><span class="ps-ico">📊</span>Dashboard</button>
+    <button class="ps-btn" onclick="swPortal('conversations',this)"><span class="ps-ico">💬</span>Conversations</button>
+    <button class="ps-btn" onclick="swPortal('properties',this)"><span class="ps-ico">🏠</span>Properties</button>
+    <div class="ps-lbl">AI settings</div>
+    <button class="ps-btn" onclick="swPortal('aiconfig',this)"><span class="ps-ico">🤖</span>AI configuration</button>
+    <button class="ps-btn" onclick="swPortal('faqs',this)"><span class="ps-ico">❓</span>FAQs & knowledge</button>
+    <button class="ps-btn" onclick="swPortal('channels',this)"><span class="ps-ico">📡</span>Channels</button>
+    <div class="ps-lbl">Account</div>
+    <button class="ps-btn" onclick="swPortal('billing-p',this)"><span class="ps-ico">💳</span>Billing</button>
+    <button class="ps-btn" onclick="swPortal('team',this)"><span class="ps-ico">👥</span>Team</button>
+    <div style="margin-top:auto;padding:8px 6px;font-size:11px;color:var(--t3)">Powered by <span style="color:var(--ac2);font-weight:600">RealCentral AI</span></div>
+  </div>
+  <div class="portal-main">
+    <!-- Overview -->
+    <div class="portal-view on" id="pv-overview">
+      <div><div class="page-h">Good morning, Carlos 👋</div><div class="page-sub">Azure Villas · Here's how your AI concierge performed today.</div></div>
+      <div class="grid4">
+        <div class="quick-stat"><div class="qs-val" style="color:var(--ac)">47</div><div class="qs-lbl">Messages handled today</div></div>
+        <div class="quick-stat"><div class="qs-val" style="color:var(--gr)">100%</div><div class="qs-lbl">Auto-resolved</div></div>
+        <div class="quick-stat"><div class="qs-val" style="color:var(--am)">3</div><div class="qs-lbl">Booking inquiries</div></div>
+        <div class="quick-stat"><div class="qs-val" style="color:var(--pu)">1</div><div class="qs-lbl">Escalations</div></div>
+      </div>
+      <div class="card">
+        <div class="card-h">Recent AI activity</div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:0">
+          <div class="notif"><span class="notif-ico">📅</span><div><div class="notif-t">Booking inquiry handled — Sarah Mitchell</div><div class="notif-s">Asked about Villa Azul July 4–8 · AI quoted $2,796 · Payment link sent</div></div><span class="notif-time">2m ago</span></div>
+          <div class="notif"><span class="notif-ico">💬</span><div><div class="notif-t">FAQ answered — 12 guests</div><div class="notif-s">Check-in times, WiFi password, pet policy, pool hours</div></div><span class="notif-time">18m ago</span></div>
+          <div class="notif"><span class="notif-ico">🚨</span><div><div class="notif-t">Escalation: Lisa Park — AC issue</div><div class="notif-s">AI detected emergency · Notified maintenance + guest relations · Resolved in 48 min</div></div><span class="notif-time">2h ago</span></div>
+          <div class="notif"><span class="notif-ico">⭐</span><div><div class="notif-t">Review request sent — Michael Chen</div><div class="notif-s">Post-stay WhatsApp · 5★ review received 20 minutes later</div></div><span class="notif-time">3h ago</span></div>
+          <div class="notif"><span class="notif-ico">💎</span><div><div class="notif-t">Upsell converted — Tom Bradley</div><div class="notif-s">Early check-in offer accepted via SMS · +$50 revenue</div></div><span class="notif-time">5h ago</span></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="card-h">This month</div><div class="card-b" style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--t2)">AI-attributed bookings</span><strong style="color:var(--gr)">$28,440</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--t2)">Upsell revenue</span><strong style="color:var(--am)">$1,240</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--t2)">Staff hours saved</span><strong style="color:var(--ac)">~186 hrs</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--t2)">Avg response time</span><strong>1.8s</strong></div>
+        </div></div>
+        <div class="card"><div class="card-h">Quick actions</div><div class="card-b" style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="alert('Opening AI config...')">⚙️ Update AI knowledge base</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="alert('Opening campaign builder...')">📣 Send marketing campaign</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="alert('Downloading report...')">📊 Download monthly report</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:flex-start" onclick="alert('Opening team settings...')">👥 Add team member</button>
+        </div></div>
+      </div>
+    </div>
+    <!-- AI Config -->
+    <div class="portal-view" id="pv-aiconfig">
+      <div><div class="page-h">AI configuration</div><div class="page-sub">Update how Maya speaks to your guests. Changes take effect immediately.</div></div>
+      <div class="card"><div class="card-h">Property info</div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fld"><label>AI name</label><input value="Maya"></div>
+          <div class="fld"><label>Tone</label><select><option selected>Friendly & warm</option><option>Professional</option><option>Luxury concierge</option></select></div>
+          <div class="fld"><label>Check-in time</label><input value="3:00 PM"></div>
+          <div class="fld"><label>Check-out time</label><input value="11:00 AM"></div>
+          <div class="fld"><label>WiFi network</label><input value="AzureVillas_Guest"></div>
+          <div class="fld"><label>WiFi password</label><input value="Sunset2024"></div>
+        </div>
+        <div class="fld"><label>Cancellation policy</label><textarea rows="2">Full refund 7+ days before check-in. 50% refund 3–6 days. No refund within 48 hours.</textarea></div>
+        <button class="btn btn-ac" onclick="alert('✅ AI updated instantly across all channels!')">💾 Save & update AI</button>
+      </div></div>
+      <div class="card"><div class="card-h">Behaviour settings</div><div class="card-b" style="display:flex;flex-direction:column;gap:9px">
+        <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Proactively offer early check-in upsell</span></div>
+        <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Send review request after every checkout</span></div>
+        <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Auto-escalate maintenance issues</span></div>
+        <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t"></div><span class="tog-l">Include pricing in first booking reply</span></div>
+      </div></div>
+    </div>
+    <!-- Billing portal -->
+    <div class="portal-view" id="pv-billing-p">
+      <div><div class="page-h">Billing & subscription</div></div>
+      <div class="card"><div class="card-h">Current plan</div><div class="card-b">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div><div style="font-size:16px;font-weight:700">Growth Plan</div><div style="font-size:12px;color:var(--t2);margin-top:2px">Up to 30 properties · All 4 channels · PMS integration</div></div>
+          <div style="text-align:right"><div style="font-size:22px;font-weight:700;color:var(--gr)">$899<span style="font-size:13px;font-weight:400;color:var(--t2)">/mo</span></div><button class="btn btn-ghost btn-sm" style="margin-top:6px">Upgrade plan</button></div>
+        </div>
+        <div class="progress"><div class="progress-f" style="width:60%;background:var(--ac)"></div></div>
+        <div style="font-size:11px;color:var(--t2);margin-top:5px">18 of 30 properties active · Next billing: Aug 1</div>
+      </div></div>
+      <div class="card"><div class="card-h">Payment history</div><div class="card-b" style="padding:0">
+        <div class="invoice-row"><span>Jul 1, 2025</span><span>Growth plan — monthly</span><span style="font-weight:600">$899.00</span><span class="inv-status inv-paid">Paid</span></div>
+        <div class="invoice-row"><span>Jun 1, 2025</span><span>Growth plan — monthly</span><span style="font-weight:600">$899.00</span><span class="inv-status inv-paid">Paid</span></div>
+        <div class="invoice-row"><span>May 12, 2025</span><span>Setup fee — onboarding</span><span style="font-weight:600">$4,500.00</span><span class="inv-status inv-paid">Paid</span></div>
+      </div></div>
+    </div>
+    <!-- placeholder views -->
+    <div class="portal-view" id="pv-conversations"><div class="page-h">Conversations</div><div style="font-size:12px;color:var(--t2);margin-top:8px">All guest conversations visible here. Switch to "Live demo" tab to see the full inbox.</div></div>
+    <div class="portal-view" id="pv-properties"><div class="page-h">Properties</div><div style="font-size:12px;color:var(--t2);margin-top:8px">25 properties configured. AI knows all details.</div></div>
+    <div class="portal-view" id="pv-faqs"><div class="page-h">FAQs & knowledge base</div><div style="font-size:12px;color:var(--t2);margin-top:8px">Manage what the AI knows. See Admin panel for full editor.</div></div>
+    <div class="portal-view" id="pv-channels"><div class="page-h">Channels</div><div style="font-size:12px;color:var(--t2);margin-top:8px">WhatsApp ✓ · SMS ✓ · Web chat ✓ · Voice — pending</div></div>
+    <div class="portal-view" id="pv-team"><div class="page-h">Team</div><div style="font-size:12px;color:var(--t2);margin-top:8px">Manage staff access and escalation routing.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ BILLING ═══════════════════ -->
+<div class="sec" id="sec-billing">
+<div class="page">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between">
+    <div><div class="page-h">Your billing dashboard</div><div class="page-sub">Your revenue as the RealCentral operator. All clients, all plans, one view.</div></div>
+    <button class="btn btn-ac" onclick="alert('Stripe dashboard opened!')">Open Stripe dashboard ↗</button>
+  </div>
+  <!-- MRR KPIs -->
+  <div class="grid4">
+    <div class="stat-box"><div class="sb-val" style="color:var(--gr)">$7,493</div><div class="sb-lbl">Monthly recurring revenue</div><div class="sb-ch" style="color:var(--gr)">↑ +$899 this month</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--ac)">7</div><div class="sb-lbl">Active clients</div><div class="sb-ch" style="color:var(--gr)">1 new this month</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--am)">$27,000</div><div class="sb-lbl">Setup fees collected (YTD)</div><div class="sb-ch" style="color:var(--t2)">Avg $3,857 per client</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--pu)">0%</div><div class="sb-lbl">Churn rate</div><div class="sb-ch" style="color:var(--gr)">No cancellations ever</div></div>
+  </div>
+  <!-- MRR breakdown -->
+  <div class="card">
+    <div class="card-h">Client MRR breakdown <button class="btn btn-ghost btn-sm">+ Add client</button></div>
+    <div class="card-b" style="padding:0">
+      <div class="mrr-row" style="padding:9px 13px 9px;background:var(--bg3)">
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em">Client</span>
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-left:auto;margin-right:16px">Plan</span>
+        <span style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;min-width:70px;text-align:right">MRR</span>
+      </div>
+      <div class="mrr-breakdown" id="mrr-list"></div>
+    </div>
+  </div>
+  <!-- Pricing plans (your offer) -->
+  <div><div style="font-size:13px;font-weight:600;margin-bottom:10px">Your pricing tiers — what you charge clients</div>
+  <div class="grid3">
+    <div class="plan-card" style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.03));border:1px solid rgba(99,102,241,.2)">
+      <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Starter</div>
+      <div style="margin-bottom:2px"><span style="font-size:13px;color:var(--t2)">$2,500 setup +</span></div>
+      <div style="font-size:26px;font-weight:800;margin-bottom:10px;color:var(--t)">$499<span style="font-size:13px;font-weight:400;color:var(--t2)">/mo</span></div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Up to 10 properties</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>WhatsApp + SMS</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>AI Q&A + bookings</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Unified inbox</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--t2)">Infra cost ≈ $45/mo · <strong style="color:var(--gr)">91% margin</strong></div>
+    </div>
+    <div class="plan-card" style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.03));border:2px solid rgba(245,158,11,.35)">
+      <div style="font-size:10px;font-weight:700;color:var(--am);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">⭐ Most popular</div>
+      <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Growth</div>
+      <div style="margin-bottom:2px"><span style="font-size:13px;color:var(--t2)">$4,500 setup +</span></div>
+      <div style="font-size:26px;font-weight:800;margin-bottom:10px;color:var(--t)">$899<span style="font-size:13px;font-weight:400;color:var(--t2)">/mo</span></div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Up to 30 properties</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>All 4 channels</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Loyalty + marketing</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>PMS integration</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Review management</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--t2)">Infra cost ≈ $90/mo · <strong style="color:var(--gr)">90% margin</strong></div>
+    </div>
+    <div class="plan-card" style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(168,85,247,.03));border:1px solid rgba(168,85,247,.2)">
+      <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">Scale</div>
+      <div style="margin-bottom:2px"><span style="font-size:13px;color:var(--t2)">$7,500 setup +</span></div>
+      <div style="font-size:26px;font-weight:800;margin-bottom:10px;color:var(--t)">$1,499<span style="font-size:13px;font-weight:400;color:var(--t2)">/mo</span></div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Up to 50 properties</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>All 4 channels + voice</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Full automation suite</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>White-label option</div>
+      <div class="plan-feat"><span class="plan-check">✓</span>Dedicated support</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--t2)">Infra cost ≈ $140/mo · <strong style="color:var(--gr)">91% margin</strong></div>
+    </div>
+  </div></div>
+  <!-- Projection -->
+  <div class="roi-calc">
+    <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--t)">📈 MRR growth projection — if you close 2 Growth clients/month</div>
+    <div class="grid4">
+      <div style="text-align:center;padding:10px"><div style="font-size:18px;font-weight:700;color:var(--t)">Month 3</div><div style="font-size:22px;font-weight:800;color:var(--gr)">$5,394</div><div style="font-size:10px;color:var(--t2)">MRR + $13.5K setup</div></div>
+      <div style="text-align:center;padding:10px"><div style="font-size:18px;font-weight:700;color:var(--t)">Month 6</div><div style="font-size:22px;font-weight:800;color:var(--gr)">$10,788</div><div style="font-size:10px;color:var(--t2)">MRR + $27K setup</div></div>
+      <div style="text-align:center;padding:10px"><div style="font-size:18px;font-weight:700;color:var(--t)">Month 12</div><div style="font-size:22px;font-weight:800;color:var(--gr)">$21,576</div><div style="font-size:10px;color:var(--t2)">MRR + $54K setup</div></div>
+      <div style="text-align:center;padding:10px"><div style="font-size:18px;font-weight:700;color:var(--t)">Year 1 total</div><div style="font-size:22px;font-weight:800;color:var(--am)">$225K+</div><div style="font-size:10px;color:var(--t2)">MRR + setup combined</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ WHITE LABEL ═══════════════════ -->
+<div class="sec" id="sec-whitelabel">
+<div class="page">
+  <div><div class="page-h">White-label configuration</div><div class="page-sub">Rebrand the entire platform under your client's name or your own brand. They never see "RealCentral" unless you want them to.</div></div>
+  <div class="grid2">
+    <!-- Config -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-h">Brand identity</div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+          <div class="fld"><label>Platform name</label><input id="wl-name" value="VillaDesk AI" oninput="updateWL()"></div>
+          <div class="fld"><label>AI agent name</label><input id="wl-agent" value="Maya" oninput="updateWL()"></div>
+          <div class="fld"><label>Tagline</label><input id="wl-tagline" value="Your 24/7 guest concierge" oninput="updateWL()"></div>
+          <div class="fld"><label>Support email</label><input value="support@villadesk.ai"></div>
+          <div>
+            <label style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:7px">Brand color</label>
+            <div style="display:flex;gap:7px;flex-wrap:wrap" id="wl-colors">
+              <div class="color-swatch sel" data-c="#6366F1" style="background:#6366F1" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#10B981" style="background:#10B981" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#F59E0B" style="background:#F59E0B" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#EF4444" style="background:#EF4444" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#EC4899" style="background:#EC4899" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#0EA5E9" style="background:#0EA5E9" onclick="setWLC(this)"></div>
+              <div class="color-swatch" data-c="#1C1C2B" style="background:#1C1C2B;border:1px solid var(--b2)" onclick="setWLC(this)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">White-label options</div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:9px">
+          <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Remove "Powered by RealCentral" branding</span></div>
+          <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Custom domain (app.villadesk.ai)</span></div>
+          <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t"></div><span class="tog-l">Custom email sender (noreply@villadesk.ai)</span></div>
+          <div class="tog" onclick="this.querySelector('.tog-t').classList.toggle('on')"><div class="tog-t on"></div><span class="tog-l">Client sees their brand throughout</span></div>
+        </div>
+      </div>
+      <button class="btn btn-ac" style="width:100%;justify-content:center" onclick="alert('✅ White-label config saved and deployed!')">🚀 Deploy white-label config</button>
+    </div>
+    <!-- Live preview -->
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;text-align:center">Live preview — client sees this</div>
+      <div class="wl-preview">
+        <div class="wl-nav" id="wl-nav">
+          <div class="wl-logo-area">
+            <div class="wl-logo-mark" id="wl-lm" style="background:#6366F1;color:white;font-size:11px;font-weight:700">VD</div>
+            <span class="wl-brand-name" id="wl-bn">VillaDesk AI</span>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:12px">
+            <span style="font-size:11px;color:#9CA3AF">Dashboard</span>
+            <span style="font-size:11px;color:#9CA3AF">Inbox</span>
+            <span style="font-size:11px;color:#9CA3AF">Settings</span>
+          </div>
+        </div>
+        <div class="wl-hero" id="wl-hero">
+          <div><div class="wl-hero-t" id="wl-hero-t">Good morning, Carlos 👋</div><div class="wl-hero-s" id="wl-hero-s">Your 24/7 guest concierge · Azure Villas</div></div>
+          <div style="font-size:22px;font-weight:800;color:#6366F1" id="wl-live-color">All systems live ✓</div>
+        </div>
+        <div class="wl-stats">
+          <div class="wls"><div class="wls-val" id="wl-sc">47</div><div class="wls-lbl">Today's messages</div></div>
+          <div class="wls"><div class="wls-val" style="color:#10B981">100%</div><div class="wls-lbl">Auto-resolved</div></div>
+          <div class="wls"><div class="wls-val" id="wl-ac" style="color:#6366F1">3</div><div class="wls-lbl">Bookings</div></div>
+        </div>
+        <div style="padding:10px 12px;font-size:10px;text-align:center;color:#9CA3AF;background:#F9FAFB;border-top:1px solid #E5E7EB" id="wl-powered">Powered by VillaDesk AI</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ PITCH & GTM ═══════════════════ -->
+<div class="sec" id="sec-pitch">
+<div class="page">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between">
+    <div><div class="page-h">Pitch deck & go-to-market</div><div class="page-sub">Your complete sales toolkit. Use these slides verbatim — they're engineered to close.</div></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-ghost btn-sm" onclick="alert('PDF exported!')">⬇ Export PDF</button>
+      <button class="btn btn-ac" onclick="alert('Copied shareable link!')">🔗 Share link</button>
+    </div>
+  </div>
+  <!-- Slides -->
+  <div class="pitch-slide" style="background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.06));border-color:rgba(99,102,241,.25)">
+    <div class="ps-num">Slide 1</div>
+    <div class="ps-tag" style="color:var(--ac2)">Opening hook</div>
+    <div class="ps-h">Your guests are texting you right now. Is anyone answering?</div>
+    <div class="ps-body">The average vacation rental manager receives 60–90 guest messages per day. Most are the same 12 questions. Every unanswered message after 10pm is a lost booking. We fix that — permanently.</div>
+    <div class="ps-highlight">💡 Pause here. Ask: "How many messages did you get last night after 9pm?" They will tell you 5–20. Then say: "I answered all of mine. Instantly. Want to see how?"</div>
+  </div>
+  <div class="pitch-slide">
+    <div class="ps-num">Slide 2</div>
+    <div class="ps-tag" style="color:var(--am)">The problem (make them feel it)</div>
+    <div class="ps-h">You're working 24/7 but still missing bookings</div>
+    <div class="ps-bullets">
+      <div class="ps-bullet"><span class="ps-b-icon">😩</span><span>Guests expect a reply in under 5 minutes — your team isn't always available</span></div>
+      <div class="ps-bullet"><span class="ps-b-icon">🔁</span><span>70% of messages are the same questions repeated over and over: WiFi, check-in, parking, pets</span></div>
+      <div class="ps-bullet"><span class="ps-b-icon">💸</span><span>A full-time guest agent costs $3,000–5,000/month. And they still call in sick</span></div>
+      <div class="ps-bullet"><span class="ps-b-icon">📱</span><span>Your messages are scattered across WhatsApp, SMS, website, email — no unified view</span></div>
+      <div class="ps-bullet"><span class="ps-b-icon">⭐</span><span>Slow replies = bad reviews. Bad reviews = fewer bookings. The spiral is real</span></div>
+    </div>
+  </div>
+  <div class="pitch-slide" style="background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(16,185,129,.02));border-color:rgba(16,185,129,.2)">
+    <div class="ps-num">Slide 3</div>
+    <div class="ps-tag" style="color:var(--gr)">The solution — live demo moment</div>
+    <div class="ps-h">RealCentral AI: one AI concierge, every channel, 24/7</div>
+    <div class="ps-body">A single AI that answers WhatsApp, SMS, web chat, and phone calls — in under 2 seconds — using your exact property info, policies, and tone of voice. It handles bookings, FAQs, confirmations, upsells, and reviews. You just watch the dashboard.</div>
+    <div class="ps-highlight">🎯 THIS IS WHERE YOU OPEN THE LIVE DEMO. Let them type a real question about their own property. Watch their jaw drop when the AI answers perfectly in 1.8 seconds.</div>
+  </div>
+  <div class="pitch-slide">
+    <div class="ps-num">Slide 4</div>
+    <div class="ps-tag" style="color:var(--ac2)">ROI — the number that closes</div>
+    <div class="ps-h">One recovered late-night booking pays for 2 months</div>
+    <div class="roi-calc">
+      <div class="grid4" style="gap:8px">
+        <div style="text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:var(--rd)">$3,200/mo</div><div style="font-size:10px;color:var(--t2)">Cost of a guest agent</div></div>
+        <div style="text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:var(--gr)">$899/mo</div><div style="font-size:10px;color:var(--t2)">RealCentral Growth</div></div>
+        <div style="text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:var(--gr)">$2,301/mo</div><div style="font-size:10px;color:var(--t2)">Immediate savings</div></div>
+        <div style="text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:var(--am)">34×</div><div style="font-size:10px;color:var(--t2)">ROI on subscription</div></div>
+      </div>
+    </div>
+    <div class="ps-body" style="margin-top:10px">Plus: every booking handled at 2am that you'd have lost before. One villa at $699/night × 4 nights = $2,796 in your pocket. RealCentral paid for itself 3 times over in one booking.</div>
+  </div>
+  <div class="pitch-slide">
+    <div class="ps-num">Slide 5</div>
+    <div class="ps-tag" style="color:var(--pu)">Feature comparison</div>
+    <div class="ps-h">What you get vs. hiring vs. doing nothing</div>
+    <div class="pricing-table">
+      <div class="pt-hdr"><div class="pt-col feat-name">Feature</div><div class="pt-col" style="color:var(--ac2)">RealCentral</div><div class="pt-col" style="color:var(--am)">Hire staff</div><div class="pt-col" style="color:var(--t3)">Do nothing</div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">24/7 availability</div><div class="pt-cell"><span class="check-y">✓</span></div><div class="pt-cell"><span class="check-n">✗</span></div><div class="pt-cell"><span class="check-n">✗</span></div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">Under 2s response</div><div class="pt-cell"><span class="check-y">✓</span></div><div class="pt-cell"><span class="check-n">✗</span></div><div class="pt-cell"><span class="check-n">✗</span></div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">All channels unified</div><div class="pt-cell"><span class="check-y">✓</span></div><div class="pt-cell"><span class="check-n">Partial</span></div><div class="pt-cell"><span class="check-n">✗</span></div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">Automated upsells</div><div class="pt-cell"><span class="check-y">✓</span></div><div class="pt-cell"><span class="check-n">Rarely</span></div><div class="pt-cell"><span class="check-n">✗</span></div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">Loyalty & CRM</div><div class="pt-cell"><span class="check-y">✓</span></div><div class="pt-cell"><span class="check-n">Partial</span></div><div class="pt-cell"><span class="check-n">✗</span></div></div>
+      <div class="pt-row"><div class="pt-cell feat-name">Monthly cost</div><div class="pt-cell" style="color:var(--gr);font-weight:600">$499–$1,499</div><div class="pt-cell" style="color:var(--rd);font-weight:600">$3,000–5,000</div><div class="pt-cell" style="color:var(--am);font-weight:600">Lost bookings</div></div>
+    </div>
+  </div>
+  <!-- Objection handler -->
+  <div><div style="font-size:13px;font-weight:600;margin-bottom:10px">Objection handler — responses to every "no"</div>
+  <div id="objections"></div></div>
+  <!-- Close script -->
+  <div class="pitch-slide" style="background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.03));border-color:rgba(16,185,129,.25)">
+    <div class="ps-num">Closing script</div>
+    <div class="ps-tag" style="color:var(--gr)">The close — word for word</div>
+    <div class="ps-h">"Which properties do you want to start with?"</div>
+    <div class="ps-body" style="line-height:1.9">
+      Don't ask "do you want to move forward?" — that's a yes/no.<br>
+      Instead say: <strong style="color:var(--t)">"I can have your AI concierge live and answering guests within 7 days. Which of your properties do you want to start with — all of them, or just the busiest ones first?"</strong><br><br>
+      If they hesitate: <strong style="color:var(--t)">"Let me show you exactly what your guests would experience right now."</strong> Open the demo again. Let them type their own FAQ.<br><br>
+      On pricing: <strong style="color:var(--t)">"The setup fee covers everything — I configure the AI on your exact properties, connect your channels, and test everything before you pay a cent of the monthly. You're covered from day one."</strong>
+    </div>
+    <div class="ps-highlight">💰 Target: close at $4,500 setup + $899/month. Collect setup via Stripe invoice on the spot. Retainer starts billing on day 8 (after go-live).</div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+function sw(name,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+name).classList.add('on');
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+function swPortal(name,el){
+  document.querySelectorAll('.portal-view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('pv-'+name).classList.add('on');
+  document.querySelectorAll('.ps-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ══ ANALYTICS ══ */
+function renderCharts(){
+  const weeks=['W1','W2','W3','W4','W5','W6','W7','W8'];
+  const vals=[18400,22100,19800,31200,28900,35600,38400,42200];
+  const max=Math.max(...vals);
+  const rc=document.getElementById('revenue-chart');
+  if(rc)rc.innerHTML=`<div class="chart-bars">${weeks.map((w,i)=>{
+    const h=Math.round((vals[i]/max)*120);
+    return`<div class="bar-col"><div class="bar" style="height:${h}px;background:linear-gradient(180deg,var(--ac),rgba(99,102,241,.4))" title="$${vals[i].toLocaleString()}"></div><div class="bar-lbl">${w}</div></div>`;
+  }).join('')}</div>`;
+
+  const spData=[[40,55,48,72,65,82,78,95],[60,45,70,55,80,65,90,85],[80,70,85,72,90,78,95,88],[50,65,45,80,70,85,75,92]];
+  ['sp1','sp2','sp3','sp4'].forEach((id,i)=>{
+    const el=document.getElementById(id);const d=spData[i];const m=Math.max(...d);
+    if(el)el.innerHTML=d.map(v=>`<div class="sp-bar" style="height:${Math.round(v/m*26)}px;background:${['var(--gr)','var(--ac)','var(--am)','var(--pu)'][i]};opacity:.7"></div>`).join('');
+  });
+
+  const funnel=document.getElementById('funnel-chart');
+  if(funnel){
+    const steps=[{l:'Total messages',v:4218,c:'var(--ac)'},{l:'Resolved by AI',v:4148,c:'var(--gr)'},{l:'Booking inquiries',v:238,c:'var(--am)'},{l:'Quotes sent',v:196,c:'var(--pu)'},{l:'Deposits received',v:153,c:'var(--gr)'}];
+    const maxV=steps[0].v;
+    funnel.innerHTML=steps.map(s=>{
+      const w=Math.round(s.v/maxV*100);
+      return`<div style="flex:1;display:flex;flex-direction:column;gap:4px;align-items:center">
+        <div style="font-size:14px;font-weight:700;color:${s.c}">${s.v.toLocaleString()}</div>
+        <div style="height:60px;width:100%;background:${s.c};opacity:.7;border-radius:4px 4px 0 0;min-height:8px"></div>
+        <div style="font-size:9px;color:var(--t3);text-align:center;white-space:nowrap">${s.l}</div>
+      </div>`;
+    }).join('<div style="width:8px;align-self:center;padding-bottom:28px;color:var(--t3);font-size:16px">›</div>');
+  }
+}
+
+/* ══ BILLING MRR ══ */
+const clients=[
+  {name:'Azure Villas',emoji:'🏖️',plan:'Growth',mrr:899,status:'active'},
+  {name:'Sunset Retreats',emoji:'🌅',plan:'Growth',mrr:899,status:'active'},
+  {name:'Coral Stays',emoji:'🪸',plan:'Scale',mrr:1499,status:'active'},
+  {name:'Palm & Sea',emoji:'🌴',plan:'Starter',mrr:499,status:'active'},
+  {name:'Beachfront Co.',emoji:'🌊',plan:'Scale',mrr:1499,status:'active'},
+  {name:'Villa Horizon',emoji:'🏡',plan:'Starter',mrr:499,status:'active'},
+  {name:'Oceana Rentals',emoji:'🐚',plan:'Growth',mrr:899,status:'active'},
+];
+const planColors={Starter:'var(--ac)',Growth:'var(--am)',Scale:'var(--pu)'};
+function renderMRR(){
+  const el=document.getElementById('mrr-list');
+  if(!el)return;
+  el.innerHTML=clients.map(c=>`
+    <div class="mrr-row">
+      <span class="mrr-name">${c.emoji} ${c.name}</span>
+      <span class="mrr-plan" style="background:${planColors[c.plan]}18;color:${planColors[c.plan]};border:1px solid ${planColors[c.plan]}30;margin-left:auto;margin-right:14px">${c.plan}</span>
+      <span class="mrr-val">$${c.mrr.toLocaleString()}/mo</span>
+    </div>`).join('');
+}
+
+/* ══ WHITE LABEL ══ */
+let wlColor='#6366F1';
+function updateWL(){
+  const name=document.getElementById('wl-name').value;
+  const agent=document.getElementById('wl-agent').value;
+  const tag=document.getElementById('wl-tagline').value;
+  const initials=name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('wl-bn').textContent=name;
+  document.getElementById('wl-lm').textContent=initials;
+  document.getElementById('wl-lm').style.background=wlColor;
+  document.getElementById('wl-hero-s').textContent=tag+' · Azure Villas';
+  document.getElementById('wl-live-color').style.color=wlColor;
+  document.getElementById('wl-ac').style.color=wlColor;
+  document.getElementById('wl-powered').textContent='Powered by '+name;
+}
+function setWLC(el){
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');wlColor=el.dataset.c;updateWL();
+}
+
+/* ══ OBJECTIONS ══ */
+const objections=[
+  {q:'"We already have someone handling guest messages."',a:'Perfect — that means you know exactly how much time it takes. RealCentral doesn\'t replace your team, it eliminates the 80% of messages that are repetitive, so your person can focus on the 20% that actually needs a human. What would they do with an extra 4 hours a day?'},
+  {q:'"It\'s too expensive."',a:'Totally understand. Let\'s do the math together: you\'re paying $3,200+/month for a full-time agent, or spending 3+ hours a day yourself. RealCentral Growth is $899/month — that\'s a $2,300 monthly saving. It pays for itself in the first week. The setup fee is a one-time investment, not recurring.'},
+  {q:'"What if the AI says something wrong?"',a:'Great question. Every response is trained on YOUR exact property info, policies, and tone — nothing is made up. And you have a full dashboard where you can see every conversation in real time and step in anytime. The AI also knows when to escalate: complaints, emergencies, and complex requests go straight to your team with full context.'},
+  {q:'"I need to think about it."',a:'Totally fair. While you\'re thinking, your competitors\' AI is answering guests right now — at midnight. What I\'d suggest is: let me set up a 7-day trial on just 3 of your properties, no commitment. You\'ll have real data on how many messages it handles and what bookings it captures. Then you decide.'},
+  {q:'"We\'re not very tech-savvy."',a:'You don\'t need to be. I handle the entire setup — connecting your channels, training the AI on your properties, and testing everything. You get a login, a dashboard, and a concierge that just works. If you can read WhatsApp, you can use RealCentral. Most clients are fully live in under a week.'},
+];
+
+function renderObjections(){
+  const el=document.getElementById('objections');
+  if(!el)return;
+  el.innerHTML=objections.map(o=>`
+    <div class="objection">
+      <div class="obj-q"><span>❓</span>${o.q}</div>
+      <div class="obj-a">${o.a}</div>
+    </div>`).join('');
+}
+
+/* ── INIT ── */
+renderCharts();
+renderMRR();
+renderObjections();
+</script>
+</html>
